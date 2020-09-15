@@ -51,22 +51,25 @@ export default [
     ]
   },
   {
-    path: '/message',
-    name: 'message',
-    component: Main,
+    path: '/main',
+    name: 'main',
     meta: {
-      hideInBread: true,
-      hideInMenu: true
+      notCache: false,
+      title: '系统管理',
+      icon: 'md-home'
     },
+    component: Main,
     children: [
       {
-        path: 'message_page',
-        name: 'message_page',
+        path: 'banner',
+        name: 'banner',
         meta: {
-          icon: 'md-notifications',
-          title: '消息中心'
+          hideInMenu: false,
+          title: 'banner-管理',
+          notCache: true,
+          icon: 'md-home'
         },
-        component: () => import('@/view/single-page/message/index.vue')
+        component: () => import('@/view/main/banner/Banner')
       }
     ]
   },

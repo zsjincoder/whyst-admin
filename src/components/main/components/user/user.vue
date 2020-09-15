@@ -27,7 +27,7 @@ export default {
     },
     messageUnreadCount: {
       type: Number,
-      default: 0
+      default: 20
     }
   },
   methods: {
@@ -42,9 +42,7 @@ export default {
       })
     },
     message () {
-      this.$router.push({
-        name: 'message_page'
-      })
+      console.log('打开消息盒子')
     },
     handleClick (name) {
       switch (name) {
