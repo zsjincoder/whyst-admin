@@ -66,10 +66,21 @@ export default [
         meta: {
           hideInMenu: false,
           title: 'banner-管理',
-          notCache: true,
+          notCache: false,
           icon: 'md-home'
         },
         component: () => import('@/view/main/banner/Banner')
+      },
+      {
+        path: 'announcement',
+        name: 'announcement',
+        meta: {
+          hideInMenu: false,
+          title: '公告管理',
+          notCache: false,
+          icon: 'md-home'
+        },
+        component: () => import('@/view/main/announcement/Announcement')
       }
     ]
   },

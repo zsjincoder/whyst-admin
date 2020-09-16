@@ -1,16 +1,6 @@
 import axios from 'axios'
-import store from '@/store'
-// import { Spin } from 'iview'
-const addErrorLog = errorInfo => {
-  const { statusText, status, request: { responseURL } } = errorInfo
-  let info = {
-    type: 'ajax',
-    code: status,
-    mes: statusText,
-    url: responseURL
-  }
-  if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
-}
+
+import { Message } from 'iview'
 
 class HttpRequest {
   constructor (baseUrl = baseURL) {
@@ -18,13 +8,14 @@ class HttpRequest {
     this.queue = {}
   }
   getInsideConfig () {
-    const config = {
+    return {
       baseURL: this.baseUrl,
+      timeout: 30000,
       headers: {
-        //
+        'Content-Type': 'application/json; charset=utf-8',
+        'token': ''
       }
     }
-    return config
   }
   destroy (url) {
     delete this.queue[url]
@@ -53,14 +44,9 @@ class HttpRequest {
       this.destroy(url)
       let errorInfo = error.response
       if (!errorInfo) {
-        const { request: { statusText, status }, config } = JSON.parse(JSON.stringify(error))
-        errorInfo = {
-          statusText,
-          status,
-          request: { responseURL: config.url }
-        }
+        const { request: { statusText, status } } = JSON.parse(JSON.stringify(error))
+        Message.error(`服务器内部错误,错误信息：${statusText},错误码：${status}`)
       }
-      addErrorLog(errorInfo)
       return Promise.reject(error)
     })
   }

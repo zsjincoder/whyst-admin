@@ -23,5 +23,8 @@ html,body{
 }
 #app {
   .size;
+  .action-btn {
+    margin-right: 10px;
+  }
 }
 </style>

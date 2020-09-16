@@ -13,6 +13,7 @@
         </FormItem>
       </Form>
     </headers>
+
     <Table :columns="columns1"
            :data="data1"
            border>
@@ -39,7 +40,7 @@
 import Headers from '_c/hearders/Headers'
 
 export default {
-  name: 'Banner',
+  name: '',
   components: { Headers },
   data () {
     return {
@@ -84,24 +85,6 @@ export default {
           age: 18,
           address: 'New York No. 1 Lake Park',
           date: '2016-10-03'
-        },
-        {
-          name: 'Jim Green',
-          age: 24,
-          address: 'London No. 1 Lake Park',
-          date: '2016-10-01'
-        },
-        {
-          name: 'Joe Black',
-          age: 30,
-          address: 'Sydney No. 1 Lake Park',
-          date: '2016-10-02'
-        },
-        {
-          name: 'Jon Snow',
-          age: 26,
-          address: 'Ottawa No. 2 Lake Park',
-          date: '2016-10-04'
         }
       ]
     }
@@ -112,6 +95,9 @@ export default {
     },
     changePageSize (pageSize) {
       this.pageData.limit = pageSize
+    },
+    text (str = '[哭]') {
+      let a = `<img src="hht:/// ">`
     }
   }
 }

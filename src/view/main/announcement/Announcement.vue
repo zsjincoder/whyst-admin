@@ -2,10 +2,13 @@
   <div>
     <headers>
       <Form :model="searchData"
-            :label-width=50
+            :label-width= 70
             inline>
-        <FormItem label="名称:">
-          <Input type="text" v-model="searchData.user" placeholder="名称"></Input>
+        <FormItem label="公告名称:">
+          <Input v-model="searchData.user"
+                 type="text"
+                 clearable
+                 placeholder="公告名称"></Input>
         </FormItem>
         <FormItem>
           <Button type="info" class="header-btn">查询</Button>
@@ -13,6 +16,7 @@
         </FormItem>
       </Form>
     </headers>
+
     <Table :columns="columns1"
            :data="data1"
            border>
@@ -25,7 +29,7 @@
       </template>
     </Table>
 
-    <Page v-if="data1.length > 1"
+    <Page v-if="data1.length > 0"
           :total="pageData.total"
           :current="pageData.page"
           :page-size="pageData.limit"
@@ -39,7 +43,7 @@
 import Headers from '_c/hearders/Headers'
 
 export default {
-  name: 'Banner',
+  name: 'Announcement',
   components: { Headers },
   data () {
     return {
@@ -84,24 +88,6 @@ export default {
           age: 18,
           address: 'New York No. 1 Lake Park',
           date: '2016-10-03'
-        },
-        {
-          name: 'Jim Green',
-          age: 24,
-          address: 'London No. 1 Lake Park',
-          date: '2016-10-01'
-        },
-        {
-          name: 'Joe Black',
-          age: 30,
-          address: 'Sydney No. 1 Lake Park',
-          date: '2016-10-02'
-        },
-        {
-          name: 'Jon Snow',
-          age: 26,
-          address: 'Ottawa No. 2 Lake Park',
-          date: '2016-10-04'
         }
       ]
     }
