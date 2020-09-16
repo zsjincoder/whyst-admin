@@ -1,5 +1,9 @@
 module.exports = {
   root: true,
+  env: {
+    "browser": true,
+    "es6": true
+  },
   'extends': [
     'plugin:vue/essential',
     '@vue/standard'
@@ -9,11 +13,12 @@ module.exports = {
     'generator-star-spacing': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'vue/no-parsing-error': [4, {
+    'vue/no-parsing-error': [2, {
       'x-invalid-end-tag': false
     }],
     'no-undef': 'off',
-    'camelcase': 'off'
+    'camelcase': 'off',
+    'space-before-function-paren':0
   },
   parserOptions: {
     parser: 'babel-eslint'

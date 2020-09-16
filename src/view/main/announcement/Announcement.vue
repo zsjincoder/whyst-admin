@@ -2,7 +2,7 @@
   <div>
     <headers>
       <Form :model="searchData"
-            :label-width= 70
+            :label-width=70
             inline>
         <FormItem label="公告名称:">
           <Input v-model="searchData.user"
@@ -11,8 +11,12 @@
                  placeholder="公告名称"></Input>
         </FormItem>
         <FormItem>
-          <Button type="info" class="header-btn">查询</Button>
-          <Button type="success">新增</Button>
+          <Button type="info"
+                  class="header-btn">查询
+          </Button>
+          <Button type="success"
+                  @click="show = true">新增
+          </Button>
         </FormItem>
       </Form>
     </headers>
@@ -36,21 +40,30 @@
           @on-change="changePage"
           @on-page-size-change="changePageSize"
           show-sizer/>
+
+    <div v-if="show"
+         class="add-or-modify">
+      <add-or-modify
+        @closeModal="closeModal"></add-or-modify>
+    </div>
   </div>
 </template>
 
 <script>
 import Headers from '_c/hearders/Headers'
+import AddOrModify from '@/view/main/announcement/component/AddOrModify'
 
 export default {
   name: 'Announcement',
-  components: { Headers },
+  components: { AddOrModify, Headers },
   data () {
     return {
       // 查询条件
       searchData: {
         user: ''
       },
+      // 显示新增修改框
+      show: false,
       // 分页信息
       pageData: {
         page: 1,
@@ -93,6 +106,15 @@ export default {
     }
   },
   methods: {
+    // 关闭弹窗
+    closeModal (flag) {
+      this.show = false
+      flag && this.getData()
+    },
+    // 获取数据
+    getData () {
+
+    },
     changePage (page) {
       this.pageData.page = page
     },
