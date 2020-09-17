@@ -404,12 +404,13 @@ export const setTitle = (routeItem, vm) => {
  * @param url
  * @param data
  * @param method
+ * @param config
  */
-export const handleRestful = (url, data, method) => {
+export const handleRestful = (url, data, method, headers = {}) => {
   switch (method) {
-    case 'get': return { url, params: data, method }
-    case 'post': return { url, data, method }
-    case 'put': return { url: `${url}/${data.id}`, data, method }
-    case 'delete': return { url: `${url}/${data}`, method }
+    case 'get': return { url, params: data, method, headers }
+    case 'post': return { url, data, method, headers }
+    case 'put': return { url: `${url}/${data.id}`, data, method, headers }
+    case 'delete': return { url: `${url}/${data}`, method, headers }
   }
 }

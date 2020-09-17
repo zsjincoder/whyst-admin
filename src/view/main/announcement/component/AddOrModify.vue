@@ -50,6 +50,12 @@ export default {
     isAdd: {
       type: Boolean,
       default: true
+    },
+    chooseItem: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   data() {
@@ -88,7 +94,7 @@ export default {
   },
   methods: {
     // 初始化 富文本编辑器
-    initCKEditor() {
+    initCKEditor(format, data) {
       CKEditor.create(document.querySelector('#editor'), {
         language: 'zh-cn',
         ckfinder: {
@@ -96,15 +102,17 @@ export default {
           // 后端处理上传逻辑返回json数据,包括uploaded(选项true/false)和url两个字段
         }
       }).then(editor => {
+        this.editor = editor // 将编辑器保存起来，用来随时获取编辑器中的内容等，执行一些操作
         const toolbarContainer = document.querySelector('#toolbar-container')
         toolbarContainer.appendChild(editor.ui.view.toolbar.element)
-        console.log(editor)
-        this.editor = editor // 将编辑器保存起来，用来随时获取编辑器中的内容等，执行一些操作
+        if (!this.isAdd) {
+          this.formItem = JSON.parse(JSON.stringify(this.chooseItem))
+          this.editor.setData(this.formItem.content, data)
+        }
       }).catch(error => {
         console.error(error)
       })
     },
-
     // 确定
     ok() {
       this.formItem.content = this.editor.getData()

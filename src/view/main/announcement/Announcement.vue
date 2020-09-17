@@ -12,10 +12,11 @@
         </FormItem>
         <FormItem>
           <Button type="info"
-                  class="header-btn">查询
+                  class="header-btn"
+                  @click="getData">查询
           </Button>
           <Button type="success"
-                  @click="show = true">新增
+                  @click="show = true;isAdd = true">新增
           </Button>
         </FormItem>
       </Form>
@@ -59,6 +60,8 @@
     <div v-if="show"
          class="add-or-modify">
       <add-or-modify
+        :is-add="isAdd"
+        :choose-item="chooseItem"
         @closeModal="closeModal"></add-or-modify>
     </div>
   </div>
@@ -83,6 +86,7 @@ export default {
       },
       // 显示新增修改框
       show: false,
+      isAdd: false,
       // 选中的行
       chooseItem: null,
       // 表格加载
@@ -147,6 +151,8 @@ export default {
     // 编辑数据
     edit(item) {
       this.chooseItem = item
+      this.isAdd = false
+      this.show = true
     },
     // 删除数据
     deleteItem(id) {

@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import iView from 'iview'
 import config from '@/config'
+import global from '@/libs/global'
 import installPlugin from '@/plugin'
 import './index.less'
 import '@/assets/icons/iconfont.css'
@@ -21,6 +22,7 @@ Vue.config.productionTip = false
  * @description 全局注册应用配置
  */
 Vue.prototype.$config = config
+Vue.prototype.$global = global
 
 /* eslint-disable no-new */
 new Vue({

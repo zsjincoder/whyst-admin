@@ -5,8 +5,8 @@ import { handleRestful } from '@/libs/util'
  * banner
  * @return {AxiosPromise}
  */
-export const banner = (data, method) => {
-  return axios.request(handleRestful(`/admin/banner`, data, method))
+export const banner = (data, method, config) => {
+  return axios.request(handleRestful(`/admin/banner`, data, method, config))
 }
 
 /**
