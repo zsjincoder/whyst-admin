@@ -5,7 +5,7 @@
             :label-width=70
             inline>
         <FormItem label="公告名称:">
-          <Input v-model="searchData.user"
+          <Input v-model="searchData.noticeTitle"
                  type="text"
                  clearable
                  placeholder="公告名称"></Input>
@@ -21,22 +21,37 @@
       </Form>
     </headers>
 
-    <Table :columns="columns1"
-           :data="data1"
+    <Table :columns="columns"
+           :data="tableData"
+           :loading="tableLoading"
            border>
       <template slot-scope="{ row, index }" slot="index">
-        <span>{{ (index + 1) + (pageData.page - 1) * pageData.limit }}</span>
+        <span>{{ (index + 1) + (searchData.page - 1) * searchData.limit }}</span>
+      </template>
+      <template slot-scope="{ row, index }" slot="content">
+        <div v-html="row.content"></div>
       </template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="default" size="small" class="action-btn">编辑</Button>
-        <Button type="error" size="small">删除</Button>
+        <Button type="primary"
+                size="small"
+                class="action-btn"
+                @click="edit(row)">编辑
+        </Button>
+        <Poptip
+          confirm
+          title="确认删除当前数据么？"
+          :transfer="true"
+          :word-wrap="true"
+          @on-ok="deleteItem(row.id)">
+          <Button type="error" size="small">删除</Button>
+        </Poptip>
       </template>
     </Table>
 
-    <Page v-if="data1.length > 0"
-          :total="pageData.total"
-          :current="pageData.page"
-          :page-size="pageData.limit"
+    <Page v-if="tableData.length > 0"
+          :total="searchData.total"
+          :current="searchData.page"
+          :page-size="searchData.limit"
           @on-change="changePage"
           @on-page-size-change="changePageSize"
           show-sizer/>
@@ -52,41 +67,55 @@
 <script>
 import Headers from '_c/hearders/Headers'
 import AddOrModify from '@/view/main/announcement/component/AddOrModify'
+import { notice } from '@/api/admin'
 
 export default {
   name: 'Announcement',
   components: { AddOrModify, Headers },
-  data () {
+  data() {
     return {
       // 查询条件
       searchData: {
-        user: ''
-      },
-      // 显示新增修改框
-      show: false,
-      // 分页信息
-      pageData: {
+        noticeTitle: '',
         page: 1,
         limit: 10,
         total: 0
       },
-      columns1: [
+      // 显示新增修改框
+      show: false,
+      // 选中的行
+      chooseItem: null,
+      // 表格加载
+      tableLoading: false,
+      tableData: []
+    }
+  },
+  computed: {
+    columns() {
+      return [
         {
           title: '序号',
           slot: 'index',
           width: 60
         },
         {
-          title: 'Name',
-          key: 'name'
+          title: '标题',
+          key: 'title',
+          width: 300
         },
         {
-          title: 'Age',
-          key: 'age'
+          title: '内容',
+          slot: 'content'
         },
         {
-          title: 'Address',
-          key: 'address'
+          title: '创建时间',
+          key: 'createTime',
+          width: 150
+        },
+        {
+          title: '更新时间',
+          key: 'updateTime',
+          width: 150
         },
         {
           title: '操作',
@@ -94,32 +123,46 @@ export default {
           align: 'center',
           width: 130
         }
-      ],
-      data1: [
-        {
-          name: 'John Brown',
-          age: 18,
-          address: 'New York No. 1 Lake Park',
-          date: '2016-10-03'
-        }
       ]
     }
   },
+  created() {
+    this.getData()
+  },
   methods: {
     // 关闭弹窗
-    closeModal (flag) {
+    closeModal(flag) {
       this.show = false
       flag && this.getData()
     },
     // 获取数据
-    getData () {
-
+    getData() {
+      this.tableLoading = true
+      notice(this.searchData, 'get').then(res => {
+        this.tableLoading = false
+        this.tableData = res.list
+        this.searchData.total = res.total
+      })
     },
-    changePage (page) {
-      this.pageData.page = page
+    // 编辑数据
+    edit(item) {
+      this.chooseItem = item
     },
-    changePageSize (pageSize) {
-      this.pageData.limit = pageSize
+    // 删除数据
+    deleteItem(id) {
+      notice(id, 'delete').then(res => {
+        console.log(res)
+        this.$Message.success('删除成功')
+        this.getData()
+      })
+    },
+    changePage(page) {
+      this.searchData.page = page
+      this.getData()
+    },
+    changePageSize(pageSize) {
+      this.searchData.limit = pageSize
+      this.getData()
     }
   }
 }

@@ -39,7 +39,12 @@ class HttpRequest {
     instance.interceptors.response.use(res => {
       this.destroy(url)
       const { data, status } = res
-      return { data, status }
+      if (data.code === 0) {
+        return data.data
+      } else {
+        Message.error(`服务器内部错误,错误信息：${data.message},错误码：${status}`)
+        return Promise.reject(data)
+      }
     }, error => {
       this.destroy(url)
       let errorInfo = error.response

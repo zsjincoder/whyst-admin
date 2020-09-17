@@ -398,3 +398,18 @@ export const setTitle = (routeItem, vm) => {
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
 }
+
+/**
+ * 处理restfulApi参数
+ * @param url
+ * @param data
+ * @param method
+ */
+export const handleRestful = (url, data, method) => {
+  switch (method) {
+    case 'get': return { url, params: data, method }
+    case 'post': return { url, data, method }
+    case 'put': return { url: `${url}/${data.id}`, data, method }
+    case 'delete': return { url: `${url}/${data}`, method }
+  }
+}

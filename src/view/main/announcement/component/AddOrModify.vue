@@ -7,7 +7,8 @@
     width="1200px"
     @on-ok="ok"
     @on-cancel="cancel">
-    <Form :model="formItem"
+    <Form ref="form"
+          :model="formItem"
           :rules="ruleValidate"
           :label-width="80">
       <FormItem label="标题："
@@ -30,12 +31,18 @@
         </div>
       </FormItem>
     </Form>
+    <div slot="footer">
+        <Button @click="cancel">取消</Button>
+        <Button type="primary"
+                @click="ok">确认</Button>
+    </div>
   </Modal>
 </template>
 
 <script>
 import CKEditor from '@ckeditor/ckeditor5-build-decoupled-document'
 import '@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn'
+import { notice } from '@/api/admin'
 
 export default {
   name: 'AddOrModify',
@@ -100,7 +107,15 @@ export default {
 
     // 确定
     ok() {
-      this.$emit('closeModal', true)
+      this.formItem.content = this.editor.getData()
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          notice(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
+            this.$Message.success('操作成功！')
+            this.$emit('closeModal', true)
+          })
+        }
+      })
     },
     // 取消
     cancel() {
