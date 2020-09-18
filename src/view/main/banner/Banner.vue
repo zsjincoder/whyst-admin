@@ -1,28 +1,9 @@
 <template>
   <div>
-    <headers>
-      <Form :model="searchData"
-            :label-width= 80
-            inline>
-        <FormItem label="是否显示:">
-          <Select v-model="searchData.is_show"
-                  style="width:120px"
-                  @on-change="getData">
-            <Option v-for="item in $global.isShow"
-                    :value="item.value"
-                    :key="item.value">{{ item.label }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem>
-          <Button type="info"
-                  class="header-btn"
-                  @click="getData">查询
-          </Button>
-          <Button type="success"
-                  @click="show = true;isAdd = true">新增
-          </Button>
-        </FormItem>
-      </Form>
+    <headers :searchData="searchData"
+             @addData="isAdd = true; show = true"
+             @queryData="getData">
+
     </headers>
 
     <Table :columns="columns"

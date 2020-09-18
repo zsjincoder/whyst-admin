@@ -1,25 +1,9 @@
 <template>
   <div>
-    <headers>
-      <Form :model="searchData"
-            :label-width=70
-            inline>
-        <FormItem label="公告名称:">
-          <Input v-model="searchData.noticeTitle"
-                 type="text"
-                 clearable
-                 placeholder="公告名称"></Input>
-        </FormItem>
-        <FormItem>
-          <Button type="info"
-                  class="header-btn"
-                  @click="getData">查询
-          </Button>
-          <Button type="success"
-                  @click="show = true;isAdd = true">新增
-          </Button>
-        </FormItem>
-      </Form>
+    <headers :searchData="searchData"
+             @addData="isAdd = true; show = true"
+             @queryData="getData">
+
     </headers>
 
     <Table :columns="columns"
