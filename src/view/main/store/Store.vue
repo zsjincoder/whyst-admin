@@ -2,25 +2,13 @@
   <div>
     <headers>
       <Form :model="searchData"
-            :label-width= 80
+            :label-width=70
             inline>
-        <FormItem label="是否显示:">
-          <Select v-model="searchData.is_show"
-                  style="width:120px"
-                  @on-change="getData">
-            <Option v-for="item in $global.isShow"
-                    :value="item.value"
-                    :key="item.value">{{ item.label }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem>
-          <Button type="info"
-                  class="header-btn"
-                  @click="getData">查询
-          </Button>
-          <Button type="success"
-                  @click="show = true;isAdd = true">新增
-          </Button>
+        <FormItem label="门店名称:">
+          <Input v-model="searchData.name"
+                 type="text"
+                 clearable
+                 placeholder="门店名称"></Input>
         </FormItem>
       </Form>
     </headers>
@@ -72,17 +60,17 @@
 
 <script>
 import Headers from '_c/hearders/Headers'
-import AddOrModify from '@/view/main/banner/component/AddOrModify'
-import { banner } from '@/api/admin'
+import AddOrModify from '@/view/main/store/component/AddOrModify'
+import { store } from '@/api/admin'
 
 export default {
-  name: 'Banner',
+  name: 'Store',
   components: { AddOrModify, Headers },
   data() {
     return {
       // 查询条件
       searchData: {
-        isShow: 1,
+        name: '',
         page: 1,
         limit: 10,
         total: 0
@@ -106,37 +94,45 @@ export default {
           width: 60
         },
         {
-          title: '跳转链接',
-          key: 'url',
-          width: 500,
+          title: '门店名称',
+          key: 'name',
+          width: 200,
           tooltip: true
         },
         {
-          title: '图片',
-          key: 'img',
+          title: '门店logo',
+          key: 'logo',
+          width: 120,
           render: (h, params) => {
             return h('img', {
               style: {
                 height: '50px',
-
                 verticalAlign: 'middle'
               },
-              attrs: { src: params.row.img }
+              attrs: { src: params.row.logo }
             })
           }
         },
         {
-          title: '是否展示',
-          key: 'isShow',
-          width: 90,
-          render: (h, params) => {
-            return h('span', this.$global.enumValue('isShow', params.row.isShow))
-          }
+          title: '联系电话',
+          key: 'contactNumber',
+          width: 120
+        },
+        {
+          title: '地址',
+          key: 'address',
+          width: 200,
+          tooltip: true
+        },
+        {
+          title: '简介',
+          key: 'introduction',
+          width: 250,
+          tooltip: true
         },
         {
           title: '备注',
           key: 'remark',
-          width: 300,
           tooltip: true
         },
         {
@@ -170,7 +166,7 @@ export default {
     // 获取数据
     getData() {
       this.tableLoading = true
-      banner(this.searchData, 'get').then(res => {
+      store(this.searchData, 'get').then(res => {
         this.tableLoading = false
         this.tableData = res.list
         this.searchData.total = res.total
@@ -184,7 +180,7 @@ export default {
     },
     // 删除数据
     deleteItem(id) {
-      banner(id, 'delete').then(res => {
+      store(id, 'delete').then(res => {
         console.log(res)
         this.$Message.success('删除成功')
         this.getData()

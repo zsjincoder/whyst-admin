@@ -51,36 +51,86 @@ export default [
     ]
   },
   {
-    path: '/main',
-    name: 'main',
+    path: '/banner',
+    name: 'banner',
     meta: {
-      notCache: false,
-      title: '系统管理',
-      icon: 'md-home'
+      hideInBread: true
     },
     component: Main,
     children: [
       {
-        path: 'banner',
-        name: 'banner',
+        path: 'banner_page',
+        name: 'banner_page',
         meta: {
           hideInMenu: false,
           title: 'banner-管理',
           notCache: false,
-          icon: 'md-home'
+          icon: 'md-images'
         },
         component: () => import('@/view/main/banner/Banner')
-      },
+      }
+    ]
+  },
+  {
+    path: '/announcement',
+    name: 'announcement',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
       {
-        path: 'announcement',
-        name: 'announcement',
+        path: 'announcement_page',
+        name: 'announcement_page',
         meta: {
           hideInMenu: false,
           title: '公告管理',
           notCache: false,
-          icon: 'md-home'
+          icon: 'ios-paper-outline'
         },
         component: () => import('@/view/main/announcement/Announcement')
+      }
+    ]
+  },
+  {
+    path: '/question',
+    name: 'question',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'question_page',
+        name: 'question_page',
+        meta: {
+          hideInMenu: false,
+          title: '常见问题管理',
+          notCache: false,
+          icon: 'md-help-circle'
+        },
+        component: () => import('@/view/main/question/Question')
+      }
+    ]
+  },
+  {
+    path: '/store',
+    name: 'store',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'store_page',
+        name: 'store_page',
+        meta: {
+          hideInMenu: false,
+          title: '门店管理',
+          notCache: false,
+          icon: 'ios-home'
+        },
+        component: () => import('@/view/main/store/Store')
       }
     ]
   },

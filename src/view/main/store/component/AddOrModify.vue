@@ -11,21 +11,21 @@
           :model="formItem"
           :rules="ruleValidate"
           :label-width="90">
-      <FormItem label="跳转链接："
-                prop="url">
-        <Input v-model="formItem.url"
+      <FormItem label="门店名称："
+                prop="name">
+        <Input v-model.trim="formItem.name"
                :maxlength="80"
                clearable
-               placeholder="请输入跳转链接"></Input>
+               placeholder="请输入门店名称"></Input>
       </FormItem>
-      <FormItem label="图片："
-                prop="img">
+      <FormItem label="门店logo："
+                prop="logo">
         <Upload :action="''"
                 :before-upload="previewUpload">
-          <div v-if="formItem.img"
+          <div v-if="formItem.logo"
                class="img-body">
             <img
-              :src="formItem.img"
+              :src="formItem.logo"
               alt="加载">
             <Icon type="ios-close-circle-outline"
                   :size="30"
@@ -39,18 +39,38 @@
           </div>
         </Upload>
       </FormItem>
-      <FormItem label="排序：">
-        <InputNumber v-model="formItem.sort"
+      <FormItem label="联系电话："
+                prop="contactNumber">
+        <InputNumber v-model.number="formItem.contactNumber"
                      clearable
                      style="width: 100%"
-                     placeholder="请输入排序"></InputNumber>
+                     placeholder="请输入联系电话"></InputNumber>
       </FormItem>
-      <FormItem label="是否显示：">
-        <Select v-model="formItem.isShow">
-          <Option v-for="item in $global.isShow"
-                  :value="item.value"
-                  :key="item.value">{{ item.label }}</Option>
-        </Select>
+      <FormItem label="地址："
+                prop="address">
+        <Input v-model.trim="formItem.address"
+               clearable
+               placeholder="请输入地址"></Input>
+      </FormItem>
+      <FormItem label="简介："
+                prop="introduction">
+        <Input v-model.trim="formItem.introduction"
+               clearable
+               placeholder="请输入简介"></Input>
+      </FormItem>
+      <FormItem label="经度："
+                prop="longitude">
+        <InputNumber v-model="formItem.longitude"
+                     clearable
+                     style="width: 100%"
+                     placeholder="请输入经度"></InputNumber>
+      </FormItem>
+      <FormItem label="纬度："
+                prop="latitude">
+        <InputNumber v-model.number="formItem.latitude"
+                     clearable
+                     style="width: 100%"
+                     placeholder="请输入纬度"></InputNumber>
       </FormItem>
       <FormItem label="备注：">
         <Input v-model="formItem.remark"
@@ -70,7 +90,7 @@
 </template>
 
 <script>
-import { banner, uploadFile } from '@/api/admin'
+import { store, uploadFile } from '@/api/admin'
 
 export default {
   name: 'AddOrModify',
@@ -92,10 +112,13 @@ export default {
       isShow: false,
       // 表单
       formItem: {
-        url: '',
-        img: null,
-        sort: 0,
-        is_show: 1,
+        name: '',
+        logo: '',
+        contactNumber: null,
+        longitude: null,
+        latitude: null,
+        address: '',
+        introduction: '',
         remark: ''
       },
       // 预览
@@ -108,11 +131,26 @@ export default {
     },
     ruleValidate() {
       return {
-        url: [
-          { required: true, message: '跳转链接不能为空', trigger: 'blur' }
+        name: [
+          { required: true, message: '门店名称能为空', trigger: 'blur' }
         ],
-        img: [
-          { required: true, message: '图片不能为空', trigger: 'blur' }
+        logo: [
+          { required: true, message: 'logo图片不能为空', trigger: 'blur' }
+        ],
+        contactNumber: [
+          { required: true, type: 'number', message: '联系电话不能为空', trigger: 'blur' }
+        ],
+        longitude: [
+          { required: true, type: 'number', message: '经度不能为空', trigger: 'blur' }
+        ],
+        latitude: [
+          { required: true, type: 'number', message: '纬度不能为空', trigger: 'blur' }
+        ],
+        address: [
+          { required: true, message: '地址不能为空', trigger: 'blur' }
+        ],
+        introduction: [
+          { required: true, message: '简介不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -121,7 +159,9 @@ export default {
     this.isShow = true
     if (!this.isAdd) {
       this.formItem = JSON.parse(JSON.stringify(this.chooseItem))
-      this.imgUrl = this.formItem.img
+      this.formItem.contactNumber = Number(this.formItem.contactNumber)
+      this.formItem.longitude = Number(this.formItem.longitude)
+      this.formItem.latitude = Number(this.formItem.latitude)
       console.log(this.formItem)
     }
   },
@@ -137,20 +177,20 @@ export default {
       let formData = new FormData()
       formData.append('file', file)
       uploadFile(formData, 'post', headers).then(res => {
-        this.formItem.img = res.imgUrl
+        this.formItem.logo = res.imgUrl
       })
       return false
     },
     // 删除文件
     closeImg(event) {
       event.stopPropagation()
-      this.formItem.img = ''
+      this.formItem.logo = ''
     },
     // 确定
     ok() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          banner(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
+          store(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
             this.$Message.success('操作成功！')
             this.$emit('closeModal', true)
           })
@@ -180,7 +220,7 @@ export default {
 .img-body {
   position: relative;
   display: inline-block;
-  width: 400px;
+  width:250px;
   height: auto;
 
   img {

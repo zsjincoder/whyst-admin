@@ -1,28 +1,14 @@
 <template>
   <div>
-    <headers>
-      <Form :model="searchData"
-            :label-width= 80
-            inline>
-        <FormItem label="是否显示:">
-          <Select v-model="searchData.is_show"
-                  style="width:120px"
-                  @on-change="getData">
-            <Option v-for="item in $global.isShow"
-                    :value="item.value"
-                    :key="item.value">{{ item.label }}</Option>
-          </Select>
-        </FormItem>
-        <FormItem>
-          <Button type="info"
-                  class="header-btn"
-                  @click="getData">查询
-          </Button>
-          <Button type="success"
-                  @click="show = true;isAdd = true">新增
-          </Button>
-        </FormItem>
-      </Form>
+    <headers :searchData="searchData"
+             @addData="isAdd = true; show = true"
+             @queryData="getData">
+      <FormItem label="门店名称:">
+        <Input v-model="searchData.name"
+               type="text"
+               clearable
+               placeholder="门店名称"></Input>
+      </FormItem>
     </headers>
 
     <Table :columns="columns"
@@ -72,17 +58,17 @@
 
 <script>
 import Headers from '_c/hearders/Headers'
-import AddOrModify from '@/view/main/banner/component/AddOrModify'
-import { banner } from '@/api/admin'
+import AddOrModify from '@/view/main/question/component/AddOrModify'
+import { question } from '@/api/admin'
 
 export default {
-  name: 'Banner',
+  name: 'Question',
   components: { AddOrModify, Headers },
   data() {
     return {
       // 查询条件
       searchData: {
-        isShow: 1,
+        name: '',
         page: 1,
         limit: 10,
         total: 0
@@ -106,37 +92,14 @@ export default {
           width: 60
         },
         {
-          title: '跳转链接',
-          key: 'url',
-          width: 500,
+          title: '问题',
+          key: 'question',
+          width: 350,
           tooltip: true
         },
         {
-          title: '图片',
-          key: 'img',
-          render: (h, params) => {
-            return h('img', {
-              style: {
-                height: '50px',
-
-                verticalAlign: 'middle'
-              },
-              attrs: { src: params.row.img }
-            })
-          }
-        },
-        {
-          title: '是否展示',
-          key: 'isShow',
-          width: 90,
-          render: (h, params) => {
-            return h('span', this.$global.enumValue('isShow', params.row.isShow))
-          }
-        },
-        {
-          title: '备注',
-          key: 'remark',
-          width: 300,
+          title: '回答',
+          key: 'answer',
           tooltip: true
         },
         {
@@ -168,9 +131,9 @@ export default {
       flag && this.getData()
     },
     // 获取数据
-    getData() {
+    getData(searchData = this.searchData) {
       this.tableLoading = true
-      banner(this.searchData, 'get').then(res => {
+      question(searchData, 'get').then(res => {
         this.tableLoading = false
         this.tableData = res.list
         this.searchData.total = res.total
@@ -184,8 +147,7 @@ export default {
     },
     // 删除数据
     deleteItem(id) {
-      banner(id, 'delete').then(res => {
-        console.log(res)
+      question(id, 'delete').then(res => {
         this.$Message.success('删除成功')
         this.getData()
       })

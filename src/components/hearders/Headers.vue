@@ -1,12 +1,109 @@
 <template>
   <div class="header-con">
-    <slot></slot>
+    <Form :model="queryFormData"
+          :label-width="labelWidth"
+          inline>
+      <slot></slot>
+      <FormItem v-if="hasTime"
+                label="时间：">
+        <DatePicker type="datetime"
+                    placeholder="开始时间"
+                    style="width: 160px"
+                    clearable
+                    :split-panels="true"
+                    :options="disabledStartTime"
+                    @on-change="changeStartTime"></DatePicker>
+        <span style="color: #dddddd">一</span>
+        <DatePicker type="datetime"
+                    placeholder="结束时间"
+                    style="width: 160px"
+                    clearable
+                    :split-panels="true"
+                    :options="disabledEndTime"
+                    @on-change="changeEndTime"></DatePicker>
+      </FormItem>
+      <FormItem>
+        <Button type="info"
+                class="header-btn"
+                @click="queryData">查询
+        </Button>
+        <Button type="success"
+                @click="add">新增
+        </Button>
+      </FormItem>
+    </Form>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Headers'
+  name: 'Headers',
+  props: {
+    searchData: {
+      type: Object,
+      default: () => {}
+    },
+    labelWidth: {
+      type: Number,
+      default: 80
+    },
+    hasTime: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      queryFormData: {
+        startTime: null,
+        endTime: null
+      }
+    }
+  },
+  computed: {
+    disabledStartTime() {
+      return {
+        disabledDate: (time) => {
+          if (this.queryFormData.endTime) {
+            return time.getTime() > new Date(this.queryFormData.endTime.replace(/-/g, '/'))
+          } else {
+            return time.getTime() > Date.now()
+          }
+        }
+      }
+    },
+    disabledEndTime() {
+      return {
+        disabledDate: (time) => {
+          if (this.queryFormData.startTime) {
+            return time.getTime() < new Date(this.queryFormData.startTime.replace(/-/g, '/')) || time.getTime() > Date.now()
+          } else {
+            return time.getTime() > Date.now()
+          }
+        }
+      }
+    }
+  },
+  methods: {
+    // 改变开始时间
+    changeStartTime(date) {
+      this.queryFormData.startTime = date || null
+      this.queryData()
+    },
+    // 改变结束时间
+    changeEndTime(date) {
+      this.queryFormData.endTime = date || null
+      this.queryData()
+    },
+    queryData() {
+      let newData = {}
+      Object.assign(newData, this.queryFormData, this.searchData)
+      this.$emit('queryData', newData)
+    },
+    add() {
+      this.$emit('addData')
+    }
+  }
 }
 </script>
 
