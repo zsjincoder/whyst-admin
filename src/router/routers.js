@@ -135,6 +135,40 @@ export default [
     ]
   },
   {
+    path: '/commodity',
+    name: 'commodity',
+    meta: {
+      // hideInBread: true
+      title: '商品管理',
+      hideInMenu: false
+    },
+    component: Main,
+    children: [
+      {
+        path: 'unit',
+        name: 'unit',
+        meta: {
+          hideInMenu: false,
+          title: '单元管理',
+          notCache: false,
+          icon: 'ios-home'
+        },
+        component: () => import('@/view/main/commodity/unit/Unit')
+      },
+      {
+        path: 'specification',
+        name: 'specification',
+        meta: {
+          hideInMenu: false,
+          title: '规格管理',
+          notCache: false,
+          icon: 'ios-home'
+        },
+        component: () => import('@/view/main/commodity/specification/Specification')
+      }
+    ]
+  },
+  {
     path: '/401',
     name: 'error_401',
     meta: {

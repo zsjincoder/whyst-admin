@@ -3,6 +3,7 @@
     <headers :searchData="searchData"
              @addData="isAdd = true; show = true"
              @queryData="getData">
+
     </headers>
 
     <Table :columns="columns"
@@ -52,17 +53,17 @@
 
 <script>
 import Headers from '_c/hearders/Headers'
-import AddOrModify from '@/view/main/question/component/AddOrModify'
-import { question } from '@/api/admin'
+import AddOrModify from '@/view/main/commodity/unit/component/AddOrModify'
+import { standardProductUnit } from '@/api/admin'
 
 export default {
-  name: 'Question',
+  name: 'Unit',
   components: { AddOrModify, Headers },
   data() {
     return {
       // 查询条件
       searchData: {
-        name: '',
+        isShow: 1,
         page: 1,
         limit: 10,
         total: 0
@@ -86,14 +87,20 @@ export default {
           width: 60
         },
         {
-          title: '问题',
-          key: 'question',
-          width: 350,
+          title: '商品名称',
+          key: 'name',
+          width: 300,
           tooltip: true
         },
         {
-          title: '回答',
-          key: 'answer',
+          title: '最低价格（元）',
+          key: 'lowPrice',
+          width: 130,
+          tooltip: true
+        },
+        {
+          title: '描述',
+          key: 'description',
           tooltip: true
         },
         {
@@ -125,9 +132,9 @@ export default {
       flag && this.getData()
     },
     // 获取数据
-    getData(searchData = this.searchData) {
+    getData() {
       this.tableLoading = true
-      question(searchData, 'get').then(res => {
+      standardProductUnit(this.searchData, 'get').then(res => {
         this.tableLoading = false
         this.tableData = res.list
         this.searchData.total = res.total
@@ -141,7 +148,8 @@ export default {
     },
     // 删除数据
     deleteItem(id) {
-      question(id, 'delete').then(res => {
+      standardProductUnit(id, 'delete').then(res => {
+        console.log(res)
         this.$Message.success('删除成功')
         this.getData()
       })

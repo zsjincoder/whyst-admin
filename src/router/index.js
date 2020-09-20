@@ -6,7 +6,8 @@ import { setTitle } from '@/libs/util'
 Vue.use(Router)
 const router = new Router({
   routes,
-  mode: 'history'
+  // mode: 'history'
+  mode: 'hash'
 })
 
 const originalPush = Router.prototype.push

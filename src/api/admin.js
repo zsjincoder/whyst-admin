@@ -40,3 +40,27 @@ export const store = (data, method) => {
 export const question = (data, method) => {
   return axios.request(handleRestful(`/admin/question`, data, method))
 }
+
+/**
+ * 单位
+ * @return {AxiosPromise}
+ */
+export const standardProductUnit = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/standard_product_unit`, data, method))
+}
+
+/**
+ * 规格
+ * @return {AxiosPromise}
+ */
+export const specification = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/specification`, data, method))
+}
+
+/**
+ * 规格值
+ * @return {AxiosPromise}
+ */
+export const specificationValue = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/specification_value`, data, method))
+}

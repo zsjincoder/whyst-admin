@@ -3,6 +3,7 @@
     <headers :searchData="searchData"
              @addData="isAdd = true; show = true"
              @queryData="getData">
+
     </headers>
 
     <Table :columns="columns"
@@ -12,14 +13,38 @@
       <template slot-scope="{ row, index }" slot="index">
         <span>{{ (index + 1) + (searchData.page - 1) * searchData.limit }}</span>
       </template>
-      <template slot-scope="{ row, index }" slot="content">
-        <div v-html="row.content"></div>
+      <template slot-scope="{ row, index }" slot="name">
+        <div v-if="inputSelect === index">
+          <Input v-model="row.name"
+                 style="width: 300px;margin-right: 10px"></Input>
+          <Button size="small"
+                  shape="circle"
+                  icon="md-checkmark"
+                  class="action-btn"
+                  @click="ok(row, index)">
+          </Button>
+          <Button size="small"
+                  shape="circle"
+                  icon="md-close"
+                  class="action-btn"
+                  @click="closeInput(index)">
+          </Button>
+        </div>
+        <div v-else>
+          <span style="width: 300px;display: inline-block;margin-right: 10px">{{row.name}}</span>
+          <Button size="small"
+                  shape="circle"
+                  icon="ios-create-outline"
+                  class="action-btn"
+                  @click="edit(row, index)">
+          </Button>
+        </div>
       </template>
       <template slot-scope="{ row, index }" slot="action">
         <Button type="primary"
                 size="small"
                 class="action-btn"
-                @click="edit(row)">编辑
+                @click="edit(row)">新增规格值
         </Button>
         <Poptip
           confirm
@@ -52,21 +77,25 @@
 
 <script>
 import Headers from '_c/hearders/Headers'
-import AddOrModify from '@/view/main/question/component/AddOrModify'
-import { question } from '@/api/admin'
+import AddOrModify from '@/view/main/commodity/specification/component/AddOrModify'
+import ExpandTable from '@/view/main/commodity/specification/component/ExpandTable'
+import { specification } from '@/api/admin'
 
 export default {
-  name: 'Question',
+  name: 'Specification',
   components: { AddOrModify, Headers },
   data() {
     return {
       // 查询条件
       searchData: {
-        name: '',
+        isShow: 1,
         page: 1,
         limit: 10,
         total: 0
       },
+      // input选中
+      inputSelect: -1,
+      inputName: '',
       // 显示新增修改框
       show: false,
       isAdd: false,
@@ -81,20 +110,30 @@ export default {
     columns() {
       return [
         {
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(ExpandTable, {
+              props: {
+                tableData: params.row.values
+              },
+              on: {
+                'updateTable': (event) => {
+                  let { index, value } = event
+                  this.$set(params.row.values[index], 'value', value)
+                }
+              }
+            })
+          }
+        },
+        {
           title: '序号',
           slot: 'index',
-          width: 60
+          width: 90
         },
         {
-          title: '问题',
-          key: 'question',
-          width: 350,
-          tooltip: true
-        },
-        {
-          title: '回答',
-          key: 'answer',
-          tooltip: true
+          title: '名称',
+          slot: 'name'
         },
         {
           title: '创建时间',
@@ -110,7 +149,7 @@ export default {
           title: '操作',
           slot: 'action',
           align: 'center',
-          width: 130
+          width: 180
         }
       ]
     }
@@ -125,23 +164,38 @@ export default {
       flag && this.getData()
     },
     // 获取数据
-    getData(searchData = this.searchData) {
+    getData() {
       this.tableLoading = true
-      question(searchData, 'get').then(res => {
+      specification(this.searchData, 'get').then(res => {
         this.tableLoading = false
         this.tableData = res.list
         this.searchData.total = res.total
       })
     },
     // 编辑数据
-    edit(item) {
-      this.chooseItem = item
-      this.isAdd = false
-      this.show = true
+    edit(item, index) {
+      this.inputName = item.name
+      this.inputSelect = index
+    },
+    // 编辑数据
+    ok(item) {
+      let { id, name } = item
+      specification({ id, name }, 'put').then(res => {
+        this.inputSelect = -1
+        this.inputName = ''
+        this.$Message.success('修改成功')
+      })
+    },
+    // 关闭
+    closeInput(index) {
+      this.inputSelect = -1
+      this.$set(this.tableData[index], 'name', this.inputName)
+      this.inputName = ''
     },
     // 删除数据
     deleteItem(id) {
-      question(id, 'delete').then(res => {
+      specification(id, 'delete').then(res => {
+        console.log(res)
         this.$Message.success('删除成功')
         this.getData()
       })

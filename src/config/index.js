@@ -12,7 +12,7 @@ export default {
    */
   baseUrl: {
     dev: 'https://api.wcables.com',
-    pro: 'https://produce.com'
+    pro: 'https://api.wcables.com'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home
