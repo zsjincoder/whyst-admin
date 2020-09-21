@@ -11,27 +11,38 @@
           :model="formItem"
           :rules="ruleValidate"
           :label-width="130">
-      <FormItem label="商品名称："
+      <FormItem v-if="isAdd"
+                label="规格名称："
                 prop="name">
         <Input v-model="formItem.name"
                :maxlength="80"
                clearable
                placeholder="请输入商品名称"></Input>
       </FormItem>
-      <FormItem label="商品最低价格(元)："
-                prop="lowPrice">
-        <InputNumber v-model="formItem.lowPrice"
-                     clearable
-                     style="width: 100%"
-                     :min="1"
-                     :max="999999999"
-                     placeholder="请输入商品最低价格"></InputNumber>
-      </FormItem>
-      <FormItem label="商品描述：">
-        <Input v-model="formItem.description "
-               clearable
-               type="textarea"
-               placeholder="请输入商品描述"></Input>
+      <FormItem label="规格值："
+                prop="values">
+        <div>
+          <Input v-model="value"
+                 :maxlength="80"
+                 clearable
+                 style="width: 180px;margin-right: 10px"
+                 placeholder="请输入规格值"></Input>
+          <Button type="default"
+                  shape="circle"
+                  icon="md-add"
+                  @click="addValues"></Button>
+        </div>
+        <div>
+          <p v-if="formItem.values.length > 0">规格值列表：</p>
+          <div>
+            <Tag v-for="(i,k) in formItem.values"
+                 :key="k"
+                 type="border"
+                 color="primary"
+                 closable
+                 @on-close="delArrayIndex(k)">{{i}}</Tag>
+          </div>
+        </div>
       </FormItem>
     </Form>
     <div slot="footer">
@@ -44,7 +55,7 @@
 </template>
 
 <script>
-import { standardProductUnit, uploadFile } from '@/api/admin'
+import { specification } from '@/api/admin'
 
 export default {
   name: 'AddOrModify',
@@ -64,11 +75,11 @@ export default {
     return {
       loading: true,
       isShow: false,
+      value: '',
       // 表单
       formItem: {
         name: '',
-        description: '',
-        lowPrice: 1
+        values: []
       },
       // 预览
       imgUrl: null
@@ -81,10 +92,10 @@ export default {
     ruleValidate() {
       return {
         name: [
-          { required: true, message: '商品名称不能为空', trigger: 'blur' }
+          { required: this.isAdd, message: '规格名称不能为空', trigger: 'blur' }
         ],
-        lowPrice: [
-          { required: true, type: 'number', message: '商品最低价格不能为空', trigger: 'blur' }
+        values: [
+          { required: true, type: 'array', message: '规格值不能为空', trigger: 'change' }
         ]
       }
     }
@@ -101,28 +112,21 @@ export default {
 
   },
   methods: {
-    // 文件上传
-    previewUpload(file) {
-      let headers = {
-        'Content-Type': 'multipart/form-data;'
-      }
-      let formData = new FormData()
-      formData.append('file', file)
-      uploadFile(formData, 'post', headers).then(res => {
-        this.formItem.img = res.imgUrl
-      })
-      return false
+    // 新增规格值
+    addValues() {
+      this.value && this.formItem.values.push(this.value)
+      this.value = ''
     },
-    // 删除文件
-    closeImg(event) {
-      event.stopPropagation()
-      this.formItem.img = ''
+    // 删除数组元素
+    delArrayIndex(index) {
+      this.$delete(this.formItem.values, index)
+      console.log(this.formItem.values)
     },
     // 确定
     ok() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          standardProductUnit(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
+          specification(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
             this.$Message.success('操作成功！')
             this.$emit('closeModal', true)
           })

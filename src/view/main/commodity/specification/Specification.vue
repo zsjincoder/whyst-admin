@@ -44,7 +44,7 @@
         <Button type="primary"
                 size="small"
                 class="action-btn"
-                @click="edit(row)">新增规格值
+                @click="add(row)">新增规格值
         </Button>
         <Poptip
           confirm
@@ -171,6 +171,11 @@ export default {
         this.tableData = res.list
         this.searchData.total = res.total
       })
+    },
+    // 编辑数据
+    add(item, index) {
+      this.isAdd = false
+      this.show = true
     },
     // 编辑数据
     edit(item, index) {

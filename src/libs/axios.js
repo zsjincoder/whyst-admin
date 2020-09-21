@@ -48,10 +48,13 @@ class HttpRequest {
     }, error => {
       this.destroy(url)
       let errorInfo = error.response
-      if (!errorInfo) {
-        const { request: { statusText, status } } = JSON.parse(JSON.stringify(error))
-        Message.error(`服务器内部错误,错误信息：${statusText},错误码：${status}`)
-      }
+      const { data: { code, message }, status } = errorInfo
+      console.log(errorInfo)
+      // const { request: { statusText, status } } = JSON.parse(JSON.stringify(error))
+      Message.error({
+        content: `服务器内部错误,错误信息：${message},错误code：${code},错误码：${status}`,
+        duration: 5
+      })
       return Promise.reject(error)
     })
   }
