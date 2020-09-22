@@ -63,7 +63,6 @@ export default {
     return {
       // 查询条件
       searchData: {
-        isShow: 1,
         page: 1,
         limit: 10,
         total: 0
@@ -149,7 +148,6 @@ export default {
     // 删除数据
     deleteItem(id) {
       standardProductUnit(id, 'delete').then(res => {
-        console.log(res)
         this.$Message.success('删除成功')
         this.getData()
       })

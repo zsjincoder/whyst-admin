@@ -145,6 +145,17 @@ export default [
     component: Main,
     children: [
       {
+        path: 'inventory',
+        name: 'inventory',
+        meta: {
+          hideInMenu: false,
+          title: '库存单元',
+          notCache: false,
+          icon: 'ios-home'
+        },
+        component: () => import('@/view/main/commodity/inventory/Inventory')
+      },
+      {
         path: 'unit',
         name: 'unit',
         meta: {

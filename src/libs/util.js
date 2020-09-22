@@ -401,16 +401,24 @@ export const setTitle = (routeItem, vm) => {
 
 /**
  * 处理restfulApi参数
- * @param url
+ * @param sendURL
  * @param data
  * @param method
- * @param config
+ * @param headers
  */
-export const handleRestful = (url, data, method, headers = {}) => {
+export const handleRestful = (sendURL, data, method, headers = {}) => {
+  let url = ''
+  if (method === 'delete') {
+    url += `${sendURL}/${data}`
+  } else if (method === 'post' || method === 'put' || 'get') {
+    url = data.hasOwnProperty('id') ? `${sendURL}/${data.id}` : sendURL
+  } else {
+    url = sendURL
+  }
   switch (method) {
     case 'get': return { url, params: data, method, headers }
     case 'post': return { url, data, method, headers }
-    case 'put': return { url: `${url}/${data.id}`, data, method, headers }
-    case 'delete': return { url: `${url}/${data}`, method, headers }
+    case 'put': return { url, data, method, headers }
+    case 'delete': return { url, method, headers }
   }
 }

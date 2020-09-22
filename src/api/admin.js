@@ -50,6 +50,14 @@ export const standardProductUnit = (data, method) => {
 }
 
 /**
+ * 单元详情
+ * @return {AxiosPromise}
+ */
+export const standardProductUnitDetail = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/standard_product_unit/detail`, data, method))
+}
+
+/**
  * 规格
  * @return {AxiosPromise}
  */
@@ -63,4 +71,44 @@ export const specification = (data, method) => {
  */
 export const specificationValue = (data, method) => {
   return axios.request(handleRestful(`/admin/goods/specification_value`, data, method))
+}
+
+/**
+ * 获取库存单元列表
+ * @return {AxiosPromise}
+ */
+export const stockKeepingUnit = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/stock_keeping_unit`, data, method))
+}
+
+/**
+ * 获取库存单元详情
+ * @return {AxiosPromise}
+ */
+export const stockKeepingUnitDetail = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/stock_keeping_unit/detail`, data, method))
+}
+
+/**
+ * 商品单元 下拉列表
+ * @return {AxiosPromise}
+ */
+export const standardProductUnitSelect = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/standard_product_unit/select`, data, method))
+}
+
+/**
+ * 商品规格 下拉列表
+ * @return {AxiosPromise}
+ */
+export const specificationSelect = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/specification/select`, data, method))
+}
+
+/**
+ * 查询商品单元的规格及规格值
+ * @return {AxiosPromise}
+ */
+export const standardProductUnitSpecification = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/standard_product_unit/specification`, data, method))
 }

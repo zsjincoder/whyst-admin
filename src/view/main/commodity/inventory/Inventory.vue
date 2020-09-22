@@ -1,7 +1,7 @@
 <template>
   <div>
     <headers :searchData="searchData"
-             @addData="isAdd = true; show = true; chooseItem = {}"
+             @addData="isAdd = true; show = true"
              @queryData="getData">
 
     </headers>
@@ -13,38 +13,14 @@
       <template slot-scope="{ row, index }" slot="index">
         <span>{{ (index + 1) + (searchData.page - 1) * searchData.limit }}</span>
       </template>
-      <template slot-scope="{ row, index }" slot="name">
-        <div v-if="inputSelect === index">
-          <Input v-model="row.name"
-                 style="width: 300px;margin-right: 10px"></Input>
-          <Button size="small"
-                  shape="circle"
-                  icon="md-checkmark"
-                  class="action-btn"
-                  @click="ok(row, index)">
-          </Button>
-          <Button size="small"
-                  shape="circle"
-                  icon="md-close"
-                  class="action-btn"
-                  @click="closeInput(index)">
-          </Button>
-        </div>
-        <div v-else>
-          <span style="width: 300px;display: inline-block;margin-right: 10px">{{row.name}}</span>
-          <Button size="small"
-                  shape="circle"
-                  icon="ios-create-outline"
-                  class="action-btn"
-                  @click="edit(row, index)">
-          </Button>
-        </div>
+      <template slot-scope="{ row, index }" slot="content">
+        <div v-html="row.content"></div>
       </template>
       <template slot-scope="{ row, index }" slot="action">
         <Button type="primary"
                 size="small"
                 class="action-btn"
-                @click="add(row)">新增规格值
+                @click="edit(row)">编辑
         </Button>
         <Poptip
           confirm
@@ -77,12 +53,11 @@
 
 <script>
 import Headers from '_c/hearders/Headers'
-import AddOrModify from '@/view/main/commodity/specification/component/AddOrModify'
-import ExpandTable from '@/view/main/commodity/specification/component/ExpandTable'
-import { specification } from '@/api/admin'
+import AddOrModify from '@/view/main/commodity/inventory/component/AddOrModify'
+import { stockKeepingUnit } from '@/api/admin'
 
 export default {
-  name: 'Specification',
+  name: 'Inventory',
   components: { AddOrModify, Headers },
   data() {
     return {
@@ -93,9 +68,6 @@ export default {
         limit: 10,
         total: 0
       },
-      // input选中
-      inputSelect: -1,
-      inputName: '',
       // 显示新增修改框
       show: false,
       isAdd: false,
@@ -110,34 +82,39 @@ export default {
     columns() {
       return [
         {
-          type: 'expand',
-          width: 50,
+          title: '序号',
+          slot: 'index',
+          width: 60
+        },
+        {
+          title: '商品名称',
+          key: 'goodsName',
+          width: 300,
+          tooltip: true
+        },
+        {
+          title: '商品图片',
+          key: 'image',
           render: (h, params) => {
-            return h(ExpandTable, {
-              props: {
-                tableData: params.row.values
+            return h('img', {
+              style: {
+                height: '50px',
+
+                verticalAlign: 'middle'
               },
-              on: {
-                'updateTable': (event) => {
-                  let { index, value } = event
-                  this.$set(params.row.values[index], 'value', value)
-                },
-                'deleteTableItem': (event) => {
-                  let { index } = event
-                  this.$delete(params.row.values, index)
-                }
-              }
+              attrs: { src: params.row.image }
             })
           }
         },
         {
-          title: '序号',
-          slot: 'index',
-          width: 90
+          title: '价格（元）',
+          key: 'price',
+          tooltip: true
         },
         {
-          title: '名称',
-          slot: 'name'
+          title: '库存量',
+          key: 'stock',
+          tooltip: true
         },
         {
           title: '创建时间',
@@ -153,7 +130,7 @@ export default {
           title: '操作',
           slot: 'action',
           align: 'center',
-          width: 180
+          width: 130
         }
       ]
     }
@@ -170,41 +147,22 @@ export default {
     // 获取数据
     getData() {
       this.tableLoading = true
-      specification(this.searchData, 'get').then(res => {
+      stockKeepingUnit(this.searchData, 'get').then(res => {
         this.tableLoading = false
         this.tableData = res.list
         this.searchData.total = res.total
       })
     },
     // 编辑数据
-    add(item) {
+    edit(item) {
       this.chooseItem = item
       this.isAdd = false
       this.show = true
     },
-    // 编辑数据
-    edit(item, index) {
-      this.inputName = item.name
-      this.inputSelect = index
-    },
-    // 编辑数据
-    ok(item) {
-      let { id, name } = item
-      specification({ id, name }, 'put').then(res => {
-        this.inputSelect = -1
-        this.inputName = ''
-        this.$Message.success('修改成功')
-      })
-    },
-    // 关闭
-    closeInput(index) {
-      this.inputSelect = -1
-      this.$set(this.tableData[index], 'name', this.inputName)
-      this.inputName = ''
-    },
     // 删除数据
     deleteItem(id) {
-      specification(id, 'delete').then(res => {
+      stockKeepingUnit(id, 'delete').then(res => {
+        console.log(res)
         this.$Message.success('删除成功')
         this.getData()
       })

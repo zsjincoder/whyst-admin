@@ -38,7 +38,7 @@
         title="确认删除当前数据么？"
         :transfer="true"
         :word-wrap="true"
-        @on-ok="deleteItem(row.id)">
+        @on-ok="deleteItem(row.id, index)">
         <Button type="error" size="small">删除</Button>
       </Poptip>
     </template>
@@ -109,8 +109,11 @@ export default {
       this.inputName = ''
       this.$forceUpdate()
     },
-    deleteItem(id) {
-
+    deleteItem(id, index) {
+      specificationValue(id, 'delete').then(res => {
+        this.$Message.success('删除成功')
+        this.$emit('deleteTableItem', { index })
+      })
     }
   }
 }

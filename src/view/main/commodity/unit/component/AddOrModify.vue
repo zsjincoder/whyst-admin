@@ -4,7 +4,7 @@
     :title="title"
     :mask-closable="false"
     :scrollable="true"
-    width="550px"
+    width="750px"
     @on-ok="ok"
     @on-cancel="cancel">
     <Form ref="form"
@@ -27,11 +27,32 @@
                      :max="999999999"
                      placeholder="请输入商品最低价格"></InputNumber>
       </FormItem>
+      <FormItem label="商品规格："
+                prop="specifications">
+        <Select v-model="specification" multiple
+                @on-change="changeSpecificationSelect">
+          <Option v-for="item in specificationSelect"
+                  :value="item.id"
+                  :key="item.id">{{ item.name }}</Option>
+        </Select>
+      </FormItem>
       <FormItem label="商品描述：">
         <Input v-model="formItem.description "
                clearable
                type="textarea"
                placeholder="请输入商品描述"></Input>
+      </FormItem>
+      <FormItem label="商品详情："
+                prop="content">
+        <div class="edit-body">
+          <!-- 工具栏容器 -->
+          <div id="toolbar-container"></div>
+
+          <!-- 编辑器容器 -->
+          <div id="editor">
+
+          </div>
+        </div>
       </FormItem>
     </Form>
     <div slot="footer">
@@ -44,7 +65,9 @@
 </template>
 
 <script>
-import { standardProductUnit, uploadFile } from '@/api/admin'
+import { specificationSelect, standardProductUnit, standardProductUnitDetail, uploadFile } from '@/api/admin'
+import CKEditor from '@ckeditor/ckeditor5-build-decoupled-document'
+import '@ckeditor/ckeditor5-build-decoupled-document/build/translations/zh-cn'
 
 export default {
   name: 'AddOrModify',
@@ -64,14 +87,19 @@ export default {
     return {
       loading: true,
       isShow: false,
+      // 商品规格
+      specificationSelect: [],
+      specification: [],
       // 表单
       formItem: {
         name: '',
         description: '',
-        lowPrice: 1
+        lowPrice: 1,
+        specifications: '',
+        detail: ''
       },
-      // 预览
-      imgUrl: null
+      // 富文本
+      editor: null
     }
   },
   computed: {
@@ -83,6 +111,9 @@ export default {
         name: [
           { required: true, message: '商品名称不能为空', trigger: 'blur' }
         ],
+        specifications: [
+          { required: true, message: '商品规格不能为空', trigger: 'change' }
+        ],
         lowPrice: [
           { required: true, type: 'number', message: '商品最低价格不能为空', trigger: 'blur' }
         ]
@@ -91,16 +122,54 @@ export default {
   },
   created() {
     this.isShow = true
-    if (!this.isAdd) {
-      this.formItem = JSON.parse(JSON.stringify(this.chooseItem))
-      this.imgUrl = this.formItem.img
-      console.log(this.formItem)
-    }
+    this.getSpecificationSelect()
+    !this.isAdd && this.getStandardProductUnitDetail()
   },
   mounted() {
-
+    this.isAdd && this.initCKEditor()
   },
   methods: {
+    // 设置商品规格
+    changeSpecificationSelect(val) {
+      this.formItem.specifications = val ? val.join(',') : ''
+    },
+    // 获取商品详情
+    async getStandardProductUnitDetail() {
+      let data = await standardProductUnitDetail({ id: this.chooseItem.id }, 'get')
+      let { detail, id, lowPrice, name, specification, description } = data
+      this.specification = specification.map(item => item.id)
+      this.formItem.id = id
+      this.formItem.description = description
+      this.formItem.lowPrice = lowPrice
+      this.formItem.name = name
+      this.formItem.detail = detail
+      this.formItem.specifications = this.specification.join(',')
+      this.initCKEditor()
+    },
+    // 获取商品规格
+    async getSpecificationSelect() {
+      let res = await specificationSelect({}, 'get')
+      this.specificationSelect = res.list
+    },
+    // 初始化 富文本编辑器
+    initCKEditor(format, data) {
+      CKEditor.create(document.querySelector('#editor'), {
+        language: 'zh-cn',
+        ckfinder: {
+          uploadUrl: '/admin/Upload/uploadUrl'
+          // 后端处理上传逻辑返回json数据,包括uploaded(选项true/false)和url两个字段
+        }
+      }).then(editor => {
+        this.editor = editor // 将编辑器保存起来，用来随时获取编辑器中的内容等，执行一些操作
+        const toolbarContainer = document.querySelector('#toolbar-container')
+        toolbarContainer.appendChild(editor.ui.view.toolbar.element)
+        if (!this.isAdd) {
+          this.editor.setData(this.formItem.detail, data)
+        }
+      }).catch(error => {
+        console.error(error)
+      })
+    },
     // 文件上传
     previewUpload(file) {
       let headers = {
@@ -120,6 +189,7 @@ export default {
     },
     // 确定
     ok() {
+      this.formItem.detail = this.editor.getData()
       this.$refs['form'].validate((valid) => {
         if (valid) {
           standardProductUnit(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
@@ -148,7 +218,11 @@ export default {
   justify-content: center;
   cursor: pointer;
 }
-
+#editor {
+  width: 100%;
+  height: 200px;
+  border: 1px slategray solid;
+}
 .img-body {
   position: relative;
   display: inline-block;

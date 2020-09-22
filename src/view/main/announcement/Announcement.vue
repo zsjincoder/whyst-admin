@@ -53,7 +53,7 @@
 
 <script>
 import Headers from '_c/hearders/Headers'
-import AddOrModify from '@/view/main/commodity/specification/component/AddOrModify'
+import AddOrModify from '@/view/main/announcement/component/AddOrModify'
 import { notice } from '@/api/admin'
 
 export default {

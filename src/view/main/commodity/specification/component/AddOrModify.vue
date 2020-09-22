@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { specification } from '@/api/admin'
+import { specification, specificationValue } from '@/api/admin'
 
 export default {
   name: 'AddOrModify',
@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     title() {
-      return this.isAdd ? '新增' : '修改'
+      return this.isAdd ? '新增规格' : '新增规格值'
     },
     ruleValidate() {
       return {
@@ -102,14 +102,6 @@ export default {
   },
   created() {
     this.isShow = true
-    if (!this.isAdd) {
-      this.formItem = JSON.parse(JSON.stringify(this.chooseItem))
-      this.imgUrl = this.formItem.img
-      console.log(this.formItem)
-    }
-  },
-  mounted() {
-
   },
   methods: {
     // 新增规格值
@@ -120,13 +112,15 @@ export default {
     // 删除数组元素
     delArrayIndex(index) {
       this.$delete(this.formItem.values, index)
-      console.log(this.formItem.values)
     },
     // 确定
     ok() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          specification(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
+          this.$delete(this.formItem, 'id')
+          this.chooseItem.hasOwnProperty('id') && (this.formItem.id = this.chooseItem.id)
+          let Api = this.isAdd ? specification : specificationValue
+          Api(this.formItem, 'post').then(res => {
             this.$Message.success('操作成功！')
             this.$emit('closeModal', true)
           })
