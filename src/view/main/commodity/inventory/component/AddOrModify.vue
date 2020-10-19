@@ -14,6 +14,8 @@
       <FormItem label="商品单元："
                 prop="spuId">
         <Select v-model="formItem.spuId"
+                clearable
+                filterable
                 @on-change="changeUnit">
           <Option v-for="item in unitSelect"
                   :value="item.id"
