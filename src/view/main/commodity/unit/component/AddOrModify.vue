@@ -42,6 +42,9 @@
                type="textarea"
                placeholder="请输入商品描述"></Input>
       </FormItem>
+      <FormItem label="是否上架：">
+        <i-switch v-model="statusA"/>
+      </FormItem>
       <FormItem label="商品详情："
                 prop="content">
         <div class="edit-body">
@@ -96,8 +99,10 @@ export default {
         description: '',
         lowPrice: 1,
         specifications: '',
-        detail: ''
+        detail: '',
+        status: 1
       },
+      statusA: true,
       // 富文本
       editor: null
     }
@@ -190,6 +195,7 @@ export default {
     // 确定
     ok() {
       this.formItem.detail = this.editor.getData()
+      this.formItem.status = this.statusA ? 1 : 0
       this.$refs['form'].validate((valid) => {
         if (valid) {
           standardProductUnit(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
