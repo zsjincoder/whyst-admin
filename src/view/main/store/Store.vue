@@ -1,6 +1,8 @@
 <template>
   <div>
-    <headers>
+    <headers :searchData="searchData"
+             @addData="isAdd = true; show = true"
+             @queryData="getData">
       <Form :model="searchData"
             :label-width=70
             inline>
