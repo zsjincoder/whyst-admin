@@ -162,7 +162,7 @@ export default {
     async getStandardProductUnitDetail() {
       let data = await stockKeepingUnitDetail({ id: this.chooseItem.id }, 'get')
       let { specificationValue } = data
-      this.specValuesList = specificationValue
+      this.specValuesList = specificationValue.map(item => item.id)
       await this.getSpecificationSelect()
     },
     // 获取商品单元
