@@ -112,3 +112,11 @@ export const specificationSelect = (data, method) => {
 export const standardProductUnitSpecification = (data, method) => {
   return axios.request(handleRestful(`/admin/goods/standard_product_unit/specification`, data, method))
 }
+
+/**
+ * 订单列表
+ * @return {AxiosPromise}
+ */
+export const orderList = (data, method) => {
+  return axios.request(handleRestful(`/admin/order`, data, method))
+}

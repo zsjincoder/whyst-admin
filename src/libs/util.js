@@ -410,7 +410,7 @@ export const handleRestful = (sendURL, data, method, headers = {}) => {
   let url = ''
   if (method === 'delete') {
     url += `${sendURL}/${data}`
-  } else if (method === 'post' || method === 'put' || 'get') {
+  } else if (method === 'post' || method === 'put' || method === 'get') {
     url = data.hasOwnProperty('id') ? `${sendURL}/${data.id}` : sendURL
   } else {
     url = sendURL

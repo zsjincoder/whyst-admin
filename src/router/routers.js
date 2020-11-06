@@ -135,6 +135,27 @@ export default [
     ]
   },
   {
+    path: '/order',
+    name: 'order',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'order_page',
+        name: 'order_page',
+        meta: {
+          hideInMenu: false,
+          title: '订单管理',
+          notCache: false,
+          icon: 'ios-home'
+        },
+        component: () => import('@/view/main/order/Order')
+      }
+    ]
+  },
+  {
     path: '/commodity',
     name: 'commodity',
     meta: {

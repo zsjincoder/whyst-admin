@@ -27,7 +27,8 @@
                 class="header-btn"
                 @click="queryData">查询
         </Button>
-        <Button type="success"
+        <Button v-if="hasAdd"
+                type="success"
                 @click="add">新增
         </Button>
       </FormItem>
@@ -48,6 +49,10 @@ export default {
       default: 80
     },
     hasTime: {
+      type: Boolean,
+      default: true
+    },
+    hasAdd: {
       type: Boolean,
       default: true
     }

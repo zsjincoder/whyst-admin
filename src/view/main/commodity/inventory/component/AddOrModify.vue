@@ -212,6 +212,7 @@ export default {
     ok() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          delete this.formItem.specificationValue
           stockKeepingUnit(this.formItem, this.isAdd ? 'post' : 'put').then(res => {
             this.$Message.success('操作成功！')
             this.$emit('closeModal', true)
