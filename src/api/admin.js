@@ -120,3 +120,19 @@ export const standardProductUnitSpecification = (data, method) => {
 export const orderList = (data, method) => {
   return axios.request(handleRestful(`/admin/order`, data, method))
 }
+
+/**
+ * 提现列表
+ * @return {AxiosPromise}
+ */
+export const withdraw = (data, method) => {
+  return axios.request(handleRestful(`/admin/user/withdraw`, data, method))
+}
+
+/**
+ * 用户列表
+ * @return {AxiosPromise}
+ */
+export const getUserList = (data, method) => {
+  return axios.request(handleRestful(`/admin/user`, data, method))
+}

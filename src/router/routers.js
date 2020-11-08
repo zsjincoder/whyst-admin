@@ -51,6 +51,27 @@ export default [
     ]
   },
   {
+    path: '/user',
+    name: 'user',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'user_page',
+        name: 'user_page',
+        meta: {
+          hideInMenu: false,
+          title: '用户列表',
+          notCache: false,
+          icon: 'ios-color-filter'
+        },
+        component: () => import('@/view/main/user/User')
+      }
+    ]
+  },
+  {
     path: '/banner',
     name: 'banner',
     meta: {
@@ -149,9 +170,30 @@ export default [
           hideInMenu: false,
           title: '订单管理',
           notCache: false,
-          icon: 'ios-home'
+          icon: 'ios-desktop'
         },
         component: () => import('@/view/main/order/Order')
+      }
+    ]
+  },
+  {
+    path: '/withdraw',
+    name: 'withdraw',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'withdraw_page',
+        name: 'withdraw_page',
+        meta: {
+          hideInMenu: false,
+          title: '提现管理',
+          notCache: false,
+          icon: 'ios-jet'
+        },
+        component: () => import('@/view/main/withdraw/Withdraw')
       }
     ]
   },
@@ -161,7 +203,8 @@ export default [
     meta: {
       // hideInBread: true
       title: '商品管理',
-      hideInMenu: false
+      hideInMenu: false,
+      icon: 'ios-grid'
     },
     component: Main,
     children: [
@@ -172,7 +215,7 @@ export default [
           hideInMenu: false,
           title: '库存单元',
           notCache: false,
-          icon: 'ios-home'
+          icon: 'ios-keypad'
         },
         component: () => import('@/view/main/commodity/inventory/Inventory')
       },
@@ -183,7 +226,7 @@ export default [
           hideInMenu: false,
           title: '单元管理',
           notCache: false,
-          icon: 'ios-home'
+          icon: 'ios-keypad-outline'
         },
         component: () => import('@/view/main/commodity/unit/Unit')
       },
@@ -194,7 +237,7 @@ export default [
           hideInMenu: false,
           title: '规格管理',
           notCache: false,
-          icon: 'ios-home'
+          icon: 'md-keypad'
         },
         component: () => import('@/view/main/commodity/specification/Specification')
       }
