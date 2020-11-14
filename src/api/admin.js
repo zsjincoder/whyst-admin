@@ -136,3 +136,27 @@ export const withdraw = (data, method) => {
 export const getUserList = (data, method) => {
   return axios.request(handleRestful(`/admin/user`, data, method))
 }
+
+/**
+ * 用户登录
+ * @return {AxiosPromise}
+ */
+export const login = (data, method) => {
+  return axios.request(handleRestful(`/admin/login`, data, method))
+}
+
+/**
+ * 核销日志
+ * @return {AxiosPromise}
+ */
+export const writeOffLog = (data, method) => {
+  return axios.request(handleRestful(`/admin/order/write_off_log`, data, method))
+}
+
+/**
+ * vip商品
+ * @return {AxiosPromise}
+ */
+export const vipGoods = (data, method) => {
+  return axios.request(handleRestful(`/admin/goods/stock_keeping_unit/vip_goods/${data.skuId}`, data, method))
+}

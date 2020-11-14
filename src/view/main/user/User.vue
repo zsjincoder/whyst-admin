@@ -26,10 +26,24 @@
       <template slot-scope="{ row, index }" slot="index">
         <span>{{ (index + 1) + (searchData.page - 1) * searchData.limit }}</span>
       </template>
-      <template slot-scope="{ row, index }" slot="content">
-        <div v-html="row.content"></div>
+      <template slot-scope="{ row, index }" slot="freeze">
+        <i-switch :value="row.isFrozen === 1" @on-change="changeSwitch(row)">
+          <span slot="open">是</span>
+          <span slot="close">否</span>
+        </i-switch>
+      </template>
+      <template slot-scope="{ row, index }" slot="role">
+        <i-switch :value="row.isMerchant" @on-change="(value) => changeRoleSwitch(row,value)">
+          <span slot="open">是</span>
+          <span slot="close">否</span>
+        </i-switch>
       </template>
       <template slot-scope="{ row, index }" slot="action">
+        <Button type="primary"
+                size="small"
+                class="action-btn"
+                @click="review1(row)">升级
+        </Button>
         <Button type="primary"
                 size="small"
                 class="action-btn"
@@ -53,6 +67,13 @@
         :chooseItem="chooseItem"
         @closeModal="closeModal"></add-or-modify>
     </div>
+    <div v-if="show1"
+         class="add-or-modify">
+      <Leave
+        :is-add="false"
+        :chooseItem="chooseItem"
+        @closeModal1="closeModal"></Leave>
+    </div>
   </div>
 </template>
 
@@ -60,10 +81,11 @@
 import Headers from '_c/hearders/Headers'
 import AddOrModify from '@/view/main/user/component/AddOrModify'
 import { getUserList } from '@/api/admin'
+import Leave from '@/view/main/user/component/leave'
 
 export default {
   name: 'User',
-  components: { AddOrModify, Headers },
+  components: { Leave, AddOrModify, Headers },
   data() {
     return {
       // 查询条件
@@ -76,6 +98,7 @@ export default {
       },
       // 显示新增修改框
       show: false,
+      show1: false,
       isAdd: false,
       // 选中的行
       chooseItem: null,
@@ -128,10 +151,10 @@ export default {
         {
           title: '性别',
           tooltip: true,
-          minWidth: 60,
+          minWidth: 80,
           render: (h, params) => {
             let arr = ['男', '女']
-            return h('span', arr[params.row.sex])
+            return h('span', arr[params.row.sex - 1])
           }
         },
         {
@@ -157,11 +180,23 @@ export default {
           width: 150
         },
         {
+          title: '是否冻结',
+          slot: 'freeze',
+          fixed: 'right',
+          width: 90
+        },
+        {
+          title: '是否商家',
+          slot: 'role',
+          fixed: 'right',
+          width: 90
+        },
+        {
           title: '操作',
           slot: 'action',
           align: 'center',
           fixed: 'right',
-          width: 120
+          width: 180
         }
       ]
     }
@@ -173,6 +208,7 @@ export default {
     // 关闭弹窗
     closeModal(flag) {
       this.show = false
+      this.show1 = false
       flag && this.getData()
     },
     // 获取数据
@@ -189,6 +225,26 @@ export default {
       this.chooseItem = item
       this.isAdd = false
       this.show = true
+    },
+    // 审核
+    review1(item) {
+      this.chooseItem = item
+      this.show1 = true
+    },
+    // 是否冻结
+    changeSwitch(row) {
+      let fro = row.isFrozen === 1 ? 0 : 1
+      getUserList({ isFrozen: fro, id: row.id }, 'put').then(res => {
+        this.$Message.success('操作成功！')
+        this.getData()
+      })
+    },
+    // 设为商家
+    changeRoleSwitch(row, value) {
+      getUserList({ roles: [value ? 4 : 0], id: row.id }, 'put').then(res => {
+        this.$Message.success('操作成功！')
+        this.getData()
+      })
     },
     changePage(page) {
       this.searchData.page = page

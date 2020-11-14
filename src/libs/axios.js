@@ -1,6 +1,8 @@
 import axios from 'axios'
 
 import { Message } from 'iview'
+import router from '@/router'
+import store from '@/store'
 
 class HttpRequest {
   constructor (baseUrl = baseURL) {
@@ -31,6 +33,7 @@ class HttpRequest {
         // Spin.show() // 不建议开启，因为界面不友好
       }
       this.queue[url] = true
+      config.headers.token = store.state.user.token || null
       return config
     }, error => {
       return Promise.reject(error)
@@ -38,14 +41,19 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       this.destroy(url)
-      const { data, status } = res
+      const { data } = res
       if (data.code === 0) {
         return data.data
+      } if (data.errCode === 4221) {
+        router.push('/login')
+        Message.error(`服务器内部错误,错误信息：${data.errMsg},错误码：${data.errCode}`)
+        return Promise.reject(data)
       } else {
-        Message.error(`服务器内部错误,错误信息：${data.message},错误码：${status}`)
+        Message.error(`服务器内部错误,错误信息：${data.errMsg},错误码：${data.errCode}`)
         return Promise.reject(data)
       }
     }, error => {
+      console.log(error)
       this.destroy(url)
       let errorInfo = error.response
       const { data: { code, message }, status } = errorInfo

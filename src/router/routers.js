@@ -30,7 +30,7 @@ export default [
   {
     path: '/',
     name: '_home',
-    redirect: '/home',
+    redirect: '/login',
     component: Main,
     meta: {
       hideInMenu: true,
@@ -173,6 +173,27 @@ export default [
           icon: 'ios-desktop'
         },
         component: () => import('@/view/main/order/Order')
+      }
+    ]
+  },
+  {
+    path: '/writeOffLog',
+    name: 'writeOffLog',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'writeOffLog_page',
+        name: 'writeOffLog_page',
+        meta: {
+          hideInMenu: false,
+          title: '核销日志',
+          notCache: false,
+          icon: 'ios-desktop'
+        },
+        component: () => import('@/view/main/writeOffLog/WriteOffLog')
       }
     ]
   },

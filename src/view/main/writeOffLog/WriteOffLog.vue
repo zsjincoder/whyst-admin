@@ -1,6 +1,7 @@
 <template>
   <div>
-    <headers :searchData="searchData"
+    <headers :hasAdd="false"
+             :searchData="searchData"
              @addData="isAdd = true; show = true"
              @queryData="getData">
 
@@ -16,26 +17,12 @@
       <template slot-scope="{ row, index }" slot="content">
         <div v-html="row.content"></div>
       </template>
-      <template slot-scope="{ row, index }" slot="vip">
-        <i-switch :value="row.isVipGoods" @on-change="(value) => change(row,value)">
-          <span slot="open">是</span>
-          <span slot="close">否</span>
-        </i-switch>
-      </template>
       <template slot-scope="{ row, index }" slot="action">
         <Button type="primary"
                 size="small"
                 class="action-btn"
-                @click="edit(row)">编辑
+                @click="edit(row)">编辑物流单号
         </Button>
-        <Poptip
-          confirm
-          title="确认删除当前数据么？"
-          :transfer="true"
-          :word-wrap="true"
-          @on-ok="deleteItem(row.id)">
-          <Button type="error" size="small">删除</Button>
-        </Poptip>
       </template>
     </Table>
 
@@ -51,7 +38,7 @@
          class="add-or-modify">
       <add-or-modify
         :is-add="isAdd"
-        :choose-item="chooseItem"
+        :chooseItem="chooseItem"
         @closeModal="closeModal"></add-or-modify>
     </div>
   </div>
@@ -59,11 +46,11 @@
 
 <script>
 import Headers from '_c/hearders/Headers'
-import AddOrModify from '@/view/main/commodity/inventory/component/AddOrModify'
-import { stockKeepingUnit, vipGoods } from '@/api/admin'
+import AddOrModify from '@/view/main/order/component/AddOrModify'
+import { writeOffLog } from '@/api/admin'
 
 export default {
-  name: 'Inventory',
+  name: 'WriteOffLog',
   components: { AddOrModify, Headers },
   data() {
     return {
@@ -93,39 +80,42 @@ export default {
           width: 60
         },
         {
-          title: '商品名称',
-          key: 'goodsName',
-          width: 300,
-          tooltip: true
+          title: '商家名称',
+          tooltip: true,
+          minWidth: 150,
+          render: (h, params) => {
+            return h('span', params.row.merchant ? params.row.merchant.nickname : '')
+          }
         },
         {
-          title: '商品图片',
-          key: 'image',
+          title: '核销人姓名',
+          minWidth: 120,
+          tooltip: true,
+          render: (h, params) => {
+            return h('span', params.row.user ? params.row.user.nickname : '')
+          }
+        },
+        {
+          title: '核销商品名',
+          tooltip: true,
+          minWidth: 150,
+          render: (h, params) => {
+            return h('span', params.row.goods ? params.row.goods.goodsName : '')
+          }
+        },
+        {
+          title: '商品图',
+          key: 'img',
+          minWidth: 100,
           render: (h, params) => {
             return h('img', {
               style: {
                 height: '50px',
-
                 verticalAlign: 'middle'
               },
-              attrs: { src: params.row.image }
+              attrs: { src: params.row.goods ? params.row.goods.image : '' }
             })
           }
-        },
-        {
-          title: '价格（元）',
-          key: 'price',
-          tooltip: true
-        },
-        {
-          title: '库存量',
-          key: 'stock',
-          tooltip: true
-        },
-        {
-          title: '核销积分',
-          key: 'writeOffCodeIntegral',
-          tooltip: true
         },
         {
           title: '创建时间',
@@ -138,22 +128,10 @@ export default {
           width: 150
         },
         {
-          title: '更新时间',
-          key: 'updateTime',
-          width: 150
-        },
-        {
-          title: 'vip商品',
-          slot: 'vip',
-          fixed: 'right',
-          width: 90
-        },
-        {
           title: '操作',
           slot: 'action',
           align: 'center',
-          fixed: 'right',
-          width: 130
+          width: 120
         }
       ]
     }
@@ -162,13 +140,6 @@ export default {
     this.getData()
   },
   methods: {
-    // change
-    change(row, value) {
-      vipGoods({ skuId: row.id }, 'put').then(res => {
-        this.$Message.success('操作成功！')
-        this.getData()
-      })
-    },
     // 关闭弹窗
     closeModal(flag) {
       this.show = false
@@ -176,9 +147,8 @@ export default {
     },
     // 获取数据
     getData() {
-      this.tableData = []
       this.tableLoading = true
-      stockKeepingUnit(this.searchData, 'get').then(res => {
+      writeOffLog(this.searchData, 'get').then(res => {
         this.tableLoading = false
         this.tableData = res.list
         this.searchData.total = res.total
@@ -191,13 +161,13 @@ export default {
       this.show = true
     },
     // 删除数据
-    deleteItem(id) {
-      stockKeepingUnit(id, 'delete').then(res => {
-        console.log(res)
-        this.$Message.success('删除成功')
-        this.getData()
-      })
-    },
+    // deleteItem(id) {
+    //   banner(id, 'delete').then(res => {
+    //     console.log(res)
+    //     this.$Message.success('删除成功')
+    //     this.getData()
+    //   })
+    // },
     changePage(page) {
       this.searchData.page = page
       this.getData()

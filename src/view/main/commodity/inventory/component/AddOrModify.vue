@@ -72,6 +72,15 @@
           </div>
         </Upload>
       </FormItem>
+      <FormItem label="核销积分："
+                prop="stock">
+        <InputNumber v-model="formItem.writeOffCodeIntegral"
+                     clearable
+                     style="width: 100%"
+                     :min="1"
+                     :max="999999999"
+                     placeholder="请输入核销积分"></InputNumber>
+      </FormItem>
     </Form>
     <div slot="footer">
       <Button @click="cancel">取消</Button>
@@ -119,7 +128,8 @@ export default {
         image: '',
         price: null,
         specValues: '',
-        stock: null
+        stock: null,
+        writeOffCodeIntegral: null
       },
       // 预览
       imgUrl: null
@@ -142,6 +152,9 @@ export default {
         ],
         stock: [
           { required: true, type: 'number', message: '商品库存不能为空', trigger: 'blur' }
+        ],
+        writeOffCodeIntegral: [
+          { required: true, type: 'number', message: '核销积分不能为空', trigger: 'blur' }
         ]
       }
     }

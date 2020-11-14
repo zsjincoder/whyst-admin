@@ -3,6 +3,7 @@
     <Dropdown @on-click="handleClick">
       <Badge :dot="!!messageUnreadCount">
         <Avatar :src="userAvatar"/>
+        <span>{{ adminName || '' }}</span>
       </Badge>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">
@@ -17,7 +18,7 @@
 
 <script>
 import './user.less'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'User',
   props: {
@@ -30,18 +31,27 @@ export default {
       default: 20
     }
   },
+  computed: {
+    ...mapGetters({
+      adminName: 'getAdminName',
+      token: 'getToken'
+    })
+  },
   methods: {
     ...mapActions([
       'handleLogOut'
     ]),
+    ...mapMutations({
+      setUserData: 'setUserData'
+    }),
     logout () {
-      this.handleLogOut().then(() => {
-        this.$router.push({
-          name: 'login'
-        })
+      this.setUserData({ token: null, authType: '' })
+      this.$router.push({
+        name: 'login'
       })
     },
     message () {
+      console.log(this.token)
       console.log('打开消息盒子')
     },
     handleClick (name) {

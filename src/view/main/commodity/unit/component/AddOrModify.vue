@@ -161,7 +161,7 @@ export default {
       CKEditor.create(document.querySelector('#editor'), {
         language: 'zh-cn',
         ckfinder: {
-          uploadUrl: '/admin/Upload/uploadUrl'
+          uploadUrl: 'https://api.wcables.com/index/file2'
           // 后端处理上传逻辑返回json数据,包括uploaded(选项true/false)和url两个字段
         }
       }).then(editor => {
