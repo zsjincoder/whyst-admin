@@ -98,6 +98,12 @@ export default {
           tooltip: true
         },
         {
+          title: '利润（元）',
+          key: 'profit',
+          width: 100,
+          tooltip: true
+        },
+        {
           title: '描述',
           key: 'description',
           tooltip: true

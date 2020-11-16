@@ -58,7 +58,7 @@ export default {
       isShow: false,
       // 表单
       formItem: {
-        status: '',
+        status: 1,
         remark: ''
       },
       // 预览

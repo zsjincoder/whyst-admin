@@ -118,6 +118,11 @@ export default {
           tooltip: true
         },
         {
+          title: '利润（元）',
+          key: 'profit',
+          tooltip: true
+        },
+        {
           title: '库存量',
           key: 'stock',
           tooltip: true

@@ -36,7 +36,8 @@
                   :key="item.id">{{ item.name }}</Option>
         </Select>
       </FormItem>
-      <FormItem label="商品描述：">
+      <FormItem label="商品描述："
+                prop="description">
         <Input v-model="formItem.description "
                clearable
                type="textarea"
@@ -121,6 +122,9 @@ export default {
         ],
         lowPrice: [
           { required: true, type: 'number', message: '商品最低价格不能为空', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '描述不能为空', trigger: 'blur' }
         ]
       }
     }

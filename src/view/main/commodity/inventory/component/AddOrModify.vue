@@ -4,13 +4,13 @@
     :title="title"
     :mask-closable="false"
     :scrollable="true"
-    width="450px"
+    width="650px"
     @on-ok="ok"
     @on-cancel="cancel">
     <Form ref="form"
           :model="formItem"
           :rules="ruleValidate"
-          :label-width="90">
+          :label-width="110">
       <FormItem label="商品单元："
                 prop="spuId">
         <Select v-model="formItem.spuId"
@@ -41,6 +41,15 @@
                      :min="1"
                      :max="999999999"
                      placeholder="请输入商品价格"></InputNumber>
+      </FormItem>
+      <FormItem label="商品利润(元)："
+                prop="profit">
+        <InputNumber v-model="formItem.profit"
+                     clearable
+                     style="width: 100%"
+                     :min="1"
+                     :max="999999999"
+                     placeholder="请输入商品利润"></InputNumber>
       </FormItem>
       <FormItem label="商品库存："
                 prop="stock">
@@ -129,7 +138,8 @@ export default {
         price: null,
         specValues: '',
         stock: null,
-        writeOffCodeIntegral: null
+        writeOffCodeIntegral: null,
+        profit: null
       },
       // 预览
       imgUrl: null
@@ -155,6 +165,9 @@ export default {
         ],
         writeOffCodeIntegral: [
           { required: true, type: 'number', message: '核销积分不能为空', trigger: 'blur' }
+        ],
+        profit: [
+          { required: true, type: 'number', message: '商品利润不能为空', trigger: 'blur' }
         ]
       }
     }
