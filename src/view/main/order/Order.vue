@@ -18,7 +18,8 @@
         <div v-html="row.content"></div>
       </template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary"
+        <Button v-if="row.status == 1"
+                type="primary"
                 size="small"
                 class="action-btn"
                 @click="edit(row)">编辑物流单号
