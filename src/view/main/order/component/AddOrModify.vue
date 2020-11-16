@@ -11,25 +11,23 @@
           :model="formItem"
           :rules="ruleValidate"
           :label-width="110">
-      <FormItem label="是否线下自提："
-                prop="final_no">
-        <i-switch v-model="isStatus"
-                  size="large"
-                  @on-change="switchChange">
-          <span slot="open">是</span>
-          <span slot="close">否</span>
-        </i-switch>
-      </FormItem>
-      <FormItem v-if="!isStatus"
-                label="物流单号："
-                prop="final_no">
+<!--      <FormItem label="是否线下自提："-->
+<!--                prop="final_no">-->
+<!--        <i-switch v-model="isStatus"-->
+<!--                  size="large"-->
+<!--                  @on-change="switchChange">-->
+<!--          <span slot="open">是</span>-->
+<!--          <span slot="close">否</span>-->
+<!--        </i-switch>-->
+<!--      </FormItem>-->
+      <FormItem label="物流单号："
+                prop="final_no1">
         <Input v-model="formItem.final_no"
                :maxlength="80"
                clearable
                placeholder="请输入物流单号"></Input>
       </FormItem>
-      <FormItem v-if="!isStatus"
-                label="物流类型："
+      <FormItem label="物流类型："
                 prop="final_type">
         <Select v-model="formItem.final_type"
                 filterable>
